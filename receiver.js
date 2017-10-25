@@ -1,20 +1,28 @@
-var $ = require('jquery');
-var http = require('http');
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-var options = {
-    host: 'localhost',
-    port: 8085,
-    path: '/'
-};
+app.get('/', function(req, res){
+  //res.send('<h1>Hello world</h1>');
+  res.sendFile(__dirname +  '/html/reader.html');
+});
 
-var html = '';
-http.get(options, function(res) {
-    res.on('data', function(data) {
-        // collect the data chunks to the variable named "html"
-        html += data;
-    }).on('end', function() {
-        // the whole of webpage data has been collected. parsing time!
-        var title = $(html).find('title').text();
-        console.log(title);
-     });
+io.on('connection', function(socket){
+  console.log('a user connected');
+  io.emit('chat message', "A user has connected!");
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+    io.emit('chat message', "A user has disconnected!");
+  });
+  socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
+  });
+  socket.on('chat message', function(msg){
+  io.emit('chat message', msg);
+  });
+
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });

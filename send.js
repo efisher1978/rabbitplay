@@ -12,7 +12,7 @@ var server = http.createServer(function (req, res) {
 });
 
 function displayForm(res) {
-    fs.readFile('form.html', function (err, data) {
+    fs.readFile('html/form.html', function (err, data) {
         res.writeHead(200, {
             'Content-Type': 'text/html',
                 'Content-Length': data.length
@@ -36,9 +36,9 @@ function processForm(req, res) {
         fields[field] = value;
         //res.write("<p>Field: " + field + " Value " + value);
     });
-        
+
     var rabbit = require("./rabbithelper.js");
-    
+
     form.on('end', function () {
 	    //console.log(res + fields["msgqueue"] + fields["data"]);
 	    rabbit.logMessage(res, fields["msgqueue"],fields["data"]);
@@ -51,4 +51,3 @@ function processForm(req, res) {
 server.listen(8081);
 
 console.log("server listening on 8081");
-
