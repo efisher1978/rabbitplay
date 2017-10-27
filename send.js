@@ -41,7 +41,8 @@ function processForm(req, res) {
 
     form.on('end', function () {
 	    //console.log(res + fields["msgqueue"] + fields["data"]);
-	    rabbit.logMessage(res, fields["msgqueue"],fields["data"]);
+	    //rabbit.logToQueue(fields["msgqueue"],fields["data"]);
+      rabbit.logToExchange("logs","")
     });
     form.parse(req);
     res.write("<script>window.location.href='.'</script>");
